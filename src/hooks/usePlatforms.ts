@@ -1,12 +1,17 @@
-
+import { useQuery } from "@tanstack/react-query";
 import platforms from "../data/platforms"
+import APICLient from "../services/api-client";
+import ms from 'ms'
+import { Platform } from "../entities/Platform";
 
-interface Platform {
-    id: number,
-    name: string,
-    slug: string
-}
 
-const usePlatform = () => ({data: platforms, isLoading: false, error: null})
+const apiClient = new APICLient<Platform>('/platforms/lists/parents')
 
-export default usePlatform;
+const usePlatforms = () => useQuery({
+    queryKey: ['platforms'],
+    queryFn: apiClient.getAll,
+    staleTime: ms('24hr'),
+    initialData: platforms,
+})
+
+export default usePlatforms;
